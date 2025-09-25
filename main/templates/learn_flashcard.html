@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Nauka fiszek</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .btn { padding: 10px 20px; background-color: #2ecc71; color: white; border: none; cursor: pointer; }
+        .btn:hover { background-color: #27ae60; }
+        input { width: 100%; max-width: 500px; margin-bottom: 10px; }
+        .correct { color: green; }
+        .incorrect { color: red; }
+    </style>
+</head>
+<body>
+
+    <h2>🎓 Nauka fiszek</h2>
+
+    <p><strong>Pytanie:</strong></p>
+    <p>{{ flashcard.question }}</p>
+
+    {% if answered %}
+        {% if correct %}
+            <p class="correct">✅ Poprawna odpowiedź!</p>
+        {% else %}
+            <p class="incorrect">❌ Błędna odpowiedź.</p>
+            <p><strong>Twoja odpowiedź:</strong> {{ user_answer }}</p>
+            <p><strong>Poprawna odpowiedź:</strong> {{ flashcard.answer }}</p>
+        {% endif %}
+
+        <p>Poziom Leitnera: <strong>{{ flashcard.level }}</strong></p>
+        <p>Następna powtórka: {{ flashcard.next_review|date:"Y-m-d H:i" }}</p>
+
+        <form method="GET">
+            <button type="submit" class="btn">→ Kolejna fiszka</button>
+        </form>
+    {% else %}
+        <form method="POST">
+            {% csrf_token %}
+            <label>Twoja odpowiedź:</label><br>
+            <input type="text" name="user_answer" required><br>
+            <button type="submit" class="btn">Sprawdź</button>
+        </form>
+    {% endif %}
+
+    <a href="{% url 'dashboard' %}">← Powrót do dashboardu</a>
+
+</body>
+</html>

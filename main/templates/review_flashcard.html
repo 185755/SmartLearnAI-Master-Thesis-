@@ -1,0 +1,14 @@
+ 
+<h2>Powtórka fiszki</h2>
+
+<p><strong>Pytanie:</strong></p>
+<p>{{ flashcard.question }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Twoja odpowiedź:</label><br>
+    <input type="text" name="user_answer" size="60"><br><br>
+    <button type="submit">Sprawdź</button>
+</form>
+
+<a href="{% url 'flashcard_queue' %}">← Powrót do kolejki</a>

@@ -1,0 +1,15 @@
+<h2>Utwórz nową fiszkę</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    <label>Pytanie:</label><br>
+    <textarea name="question" rows="3" cols="60"></textarea><br><br>
+
+    <label>Odpowiedź:</label><br>
+    <textarea name="answer" rows="2" cols="60"></textarea><br><br>
+
+    <button type="submit">Zapisz fiszkę</button>
+</form>
+
+<a href="{% url 'dashboard' %}">← Powrót do dashboardu</a>
+ 

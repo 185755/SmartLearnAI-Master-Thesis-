@@ -1,0 +1,17 @@
+ 
+<h2>Fiszki do powtórki</h2>
+
+{% if flashcards %}
+  <ul>
+    {% for card in flashcards %}
+      <li>
+        <strong>Poziom {{ card.level }}</strong>: {{ card.question|truncatechars:50 }}
+        — <a href="{% url 'review_flashcard' card.id %}">Powtórz</a>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Brak fiszek do powtórki na teraz.</p>
+{% endif %}
+
+<a href="{% url 'dashboard' %}">← Powrót do dashboardu</a>

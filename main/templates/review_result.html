@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Wynik powtórki</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .correct { color: green; }
+        .incorrect { color: red; }
+        .btn { padding: 10px 20px; background-color: #3498db; color: white; border: none; cursor: pointer; }
+        .btn:hover { background-color: #2980b9; }
+    </style>
+</head>
+<body>
+
+    <h2>📊 Wynik powtórki</h2>
+
+    {% if correct %}
+        <p class="correct">✅ Poprawna odpowiedź!</p>
+    {% else %}
+        <p class="incorrect">❌ Błędna odpowiedź.</p>
+        <p><strong>Poprawna odpowiedź:</strong> {{ flashcard.answer }}</p>
+    {% endif %}
+
+    <p>Poziom Leitnera: <strong>{{ flashcard.level }}</strong></p>
+    <p>Następna powtórka: {{ flashcard.next_review|date:"Y-m-d H:i" }}</p>
+
+    <a href="{% url 'flashcard_queue' %}" class="btn">→ Kolejna fiszka</a>
+
+</body>
+</html>

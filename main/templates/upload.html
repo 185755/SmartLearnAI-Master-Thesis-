@@ -1,0 +1,10 @@
+<h2>Wgraj materiał edukacyjny</h2>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="file" name="material"><br>
+  <button type="submit">Wyślij</button>
+</form>
+{% if filename %}
+  <p>Plik zapisany jako: {{ filename }}</p>
+{% endif %}
+ 
