@@ -11,6 +11,7 @@ urlpatterns = [
     path('flashcards/queue/', views.flashcard_queue, name='flashcard_queue'),
     path('learn/', views.learn_flashcard, name='learn_flashcard'),
     path('flashcards/generate/', views.generate_flashcards, name='generate_flashcards'),
+    path("dashboard/manage/", views.manage_flashcards, name="manage_flashcards"),
 
 
 ]

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Twoje fiszki</h2>
+
+{% if flashcards %}
+    <ul class="list-group">
+        {% for flashcard in flashcards %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>Pytanie:</strong> {{ flashcard.question }}<br>
+                <strong>Odpowiedź:</strong> {{ flashcard.answer }}
+            </div>
+            <form method="post" style="margin-left: 20px;">
+                {% csrf_token %}
+                <input type="hidden" name="delete_id" value="{{ flashcard.id }}">
+                <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Brak fiszek do wyświetlenia.</p>
+{% endif %}
+
+<a href="{% url 'dashboard' %}" class="btn btn-secondary mt-3">Powrót do dashboardu</a>
+{% endblock %}

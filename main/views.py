@@ -6,8 +6,23 @@ from django.core.files.storage import FileSystemStorage
 from .models import Material
 from .models import Flashcard
 from django.utils import timezone
+from django.contrib import messages
 from datetime import timedelta
+from .file_reader import extract_text_from_file
+from .ai_flashcard_generator import generate_flashcards_from_text
+from django.shortcuts import render, redirect
+
 @login_required
+def manage_flashcards(request):
+    if request.method == "POST":
+        flashcard_id = request.POST.get("delete_id")
+        Flashcard.objects.filter(id=flashcard_id, owner=request.user).delete()
+        return redirect("manage_flashcards")
+
+    flashcards = Flashcard.objects.filter(owner=request.user).order_by("-next_review")
+    return render(request, "manage_flashcards.html", {"flashcards": flashcards})
+
+
 @login_required
 def user_dashboard(request):
     if request.method == 'POST' and request.FILES.get('material'):
@@ -40,28 +55,43 @@ def login_view(request):
             return render(request, 'login.html', {'error': 'Nieprawidłowe dane logowania'})
     return render(request, 'login.html')
 @login_required
+@login_required
 def generate_flashcards(request):
-    materials = Material.objects.filter(uploaded_by=request.user)
+    if request.method == "POST":
+        materials = Material.objects.filter(uploaded_by=request.user)
 
-    for material in materials:
-        file_path = material.file.path
-        text = extract_text_from_file(file_path)
-        raw_output = generate_flashcards_from_text(text)
+        generated_count = 0
+        max_flashcards = 20  # 🔒 limit fiszek
 
-        for block in raw_output.split('\n\n'):
-            if 'Pytanie:' in block and 'Odpowiedź:' in block:
-                question = block.split('Pytanie:')[1].split('Odpowiedź:')[0].strip()
-                answer = block.split('Odpowiedź:')[1].strip()
+        for material in materials:
+            if generated_count >= max_flashcards:
+                break  # przerwij, jeśli osiągnięto limit
 
-                Flashcard.objects.create(
-                    question=question,
-                    answer=answer,
-                    owner=request.user,
-                    level=1,
-                    next_review=timezone.now() + timedelta(days=1)
-                )
+            file_path = material.file.path
+            text = extract_text_from_file(file_path)
+            raw_output = generate_flashcards_from_text(text)
 
+            for block in raw_output.split('\n\n'):
+                if generated_count >= max_flashcards:
+                    break  # przerwij również wewnętrzną pętlę
+
+                if 'Pytanie:' in block and 'Odpowiedź:' in block:
+                    question = block.split('Pytanie:')[1].split('Odpowiedź:')[0].strip()
+                    answer = block.split('Odpowiedź:')[1].strip()
+
+                    Flashcard.objects.create(
+                        question=question,
+                        answer=answer,
+                        owner=request.user,
+                        level=1,
+                        next_review=timezone.now()
+                    )
+                    generated_count += 1
+
+        messages.success(request, f"Wygenerowano {generated_count} fiszek 🎉 (limit: {max_flashcards})")
     return redirect('dashboard')
+
+
 @login_required
 def learn_flashcard(request):
     now = timezone.now()

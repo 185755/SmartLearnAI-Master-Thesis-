@@ -1,6 +1,7 @@
-import openai
+from openai import OpenAI
 
-openai.api_key = "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"
+# inicjalizacja klienta
+client = OpenAI(api_key="KLUCZ")  # albo os.getenv("OPENAI_API_KEY")
 
 def generate_flashcards_from_text(text):
     prompt = f"""
@@ -12,12 +13,16 @@ Treść:
 {text}
 """
 
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "Jesteś ekspertem od tworzenia fiszek edukacyjnych."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-
-    return response['choices'][0]['message']['content']
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",  # tani i szybki model
+            messages=[
+                {"role": "system", "content": "Jesteś ekspertem od tworzenia fiszek edukacyjnych."},
+                {"role": "user", "content": prompt}
+            ],
+            max_completion_tokens=5000  # 🔒 limit odpowiedzi, żeby nie wygenerował za dużo
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        # obsługa błędów (np. quota, rate limit)
+        return f"⚠️ Błąd podczas generowania fiszek: {e}"
