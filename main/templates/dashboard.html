@@ -30,6 +30,13 @@
                     </li>
                 {% endfor %}
             </ul>
+
+            <!-- 🔘 Przycisk generowania fiszek -->
+            <form method="POST" action="{% url 'generate_flashcards' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn" style="margin-top: 20px;">🧠 Generuj Fiszki</button>
+            </form>
+
         {% else %}
             <p>Nie masz jeszcze żadnych materiałów.</p>
         {% endif %}
@@ -45,15 +52,13 @@
 
             <button type="submit" class="btn">Wyślij</button>
         </form>
-
-		
     </div>
 
     <div class="section">
         <h2>🎓 System fiszek (Leitner)</h2>
         <p>Powtarzaj pytania według inteligentnego algorytmu. Im lepiej odpowiadasz, tym rzadziej wracają!</p>
 
-        <<a href="{% url 'learn_flashcard' %}" class="btn"> 🚀 Rozpocznij naukę </a>
+        <a href="{% url 'learn_flashcard' %}" class="btn">🚀 Rozpocznij naukę</a>
         <a href="{% url 'create_flashcard' %}" class="btn" style="margin-left: 10px;">➕ Dodaj fiszkę</a>
     </div>
 

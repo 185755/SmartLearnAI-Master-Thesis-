@@ -10,6 +10,8 @@ urlpatterns = [
     path('flashcards/review/<int:flashcard_id>/', views.review_flashcard, name='review_flashcard'),
     path('flashcards/queue/', views.flashcard_queue, name='flashcard_queue'),
     path('learn/', views.learn_flashcard, name='learn_flashcard'),
+    path('flashcards/generate/', views.generate_flashcards, name='generate_flashcards'),
+
 
 ]
 
