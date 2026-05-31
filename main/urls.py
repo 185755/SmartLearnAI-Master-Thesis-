@@ -12,7 +12,8 @@ urlpatterns = [
     path('learn/', views.learn_flashcard, name='learn_flashcard'),
     path('flashcards/generate/', views.generate_flashcards, name='generate_flashcards'),
     path("dashboard/manage/", views.manage_flashcards, name="manage_flashcards"),
-
+    path("dashboard/delete/<int:material_id>/", views.delete_material, name="delete_material"),
+    path('reset_flashcards/', views.reset_flashcards, name='reset_flashcards'),
 
 ]
 

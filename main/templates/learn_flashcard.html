@@ -9,6 +9,7 @@
         .btn:hover { background-color: #27ae60; }
         input { width: 100%; max-width: 500px; margin-bottom: 10px; }
         .correct { color: green; }
+        .partial { color: orange; }
         .incorrect { color: red; }
     </style>
 </head>
@@ -20,25 +21,34 @@
     <p>{{ flashcard.question }}</p>
 
     {% if answered %}
-        {% if correct %}
+        {% if verdict == "poprawna" %}
             <p class="correct">✅ Poprawna odpowiedź!</p>
+        {% elif verdict == "częściowo poprawna" %}
+            <p class="partial">⚠️ Częściowo poprawna odpowiedź.</p>
+            <p><strong>Twoja odpowiedź:</strong> {{ user_answer }}</p>
+            <p><strong>Poprawna odpowiedź:</strong> {{ flashcard.answer }}</p>
         {% else %}
             <p class="incorrect">❌ Błędna odpowiedź.</p>
             <p><strong>Twoja odpowiedź:</strong> {{ user_answer }}</p>
             <p><strong>Poprawna odpowiedź:</strong> {{ flashcard.answer }}</p>
         {% endif %}
 
-        <p>Poziom Leitnera: <strong>{{ flashcard.level }}</strong></p>
-        <p>Następna powtórka: {{ flashcard.next_review|date:"Y-m-d H:i" }}</p>
+        <p>Pozostałe powtórki: <strong>{{ flashcard.remaining_reviews }}</strong></p>
 
         <form method="GET">
             <button type="submit" class="btn">→ Kolejna fiszka</button>
         </form>
+
     {% else %}
         <form method="POST">
             {% csrf_token %}
+
+            <!-- 🔥 KLUCZOWE: ID FISZKI, KTÓRĄ OCENIAMY -->
+            <input type="hidden" name="flashcard_id" value="{{ flashcard.id }}">
+
             <label>Twoja odpowiedź:</label><br>
             <input type="text" name="user_answer" required><br>
+
             <button type="submit" class="btn">Sprawdź</button>
         </form>
     {% endif %}
